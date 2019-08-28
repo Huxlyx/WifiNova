@@ -10,6 +10,7 @@ public class ServerMain {
 		final int port = 7878;
 		
 		final NovaServer server = new NovaServer(port);
+		server.run();
 	}
 
 }

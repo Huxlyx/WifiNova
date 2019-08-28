@@ -1,8 +1,17 @@
 package de.mario.nova.command;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.mario.nova.Logging;
 import de.mario.nova.command.NovaCommandUtil.LightCommand;
 
 public abstract class AbstractNovaCommand {
+
+	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
 	
 	private final LightCommand command;
 	
@@ -36,7 +45,18 @@ public abstract class AbstractNovaCommand {
 		return target;
 	}
 	
-	public abstract byte[] getCmdBytes();
+	protected abstract byte[] getPayload();
+
+	public byte[] getCmdBytes() {
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+		try {
+			outputStream.write(getCmdHeader());
+			outputStream.write(getPayload());
+		} catch (final IOException e) {
+			LOG.error(() -> "Error constructing cmdByte array", e);
+		}
+		return outputStream.toByteArray();
+	}
 	
 	protected byte[] getCmdHeader() {
 		return cmdHeader;

@@ -32,9 +32,6 @@ public class ControlRunnable implements Runnable, CommandHandler {
 					LOG.trace(() -> "Broadcast command " + cmd);
 					CMD_SINKS.forEach(s -> s.handleCommand(cmd));
 				}
-
-
-
 			} catch (final InterruptedException e) {
 				LOG.warn(() -> "Main control loop interrupted", e);
 				Thread.currentThread().interrupt();

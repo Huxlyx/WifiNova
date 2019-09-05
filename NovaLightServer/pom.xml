@@ -30,6 +30,11 @@
 			<version>2.12.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+		<dependency>
 			<groupId>de.mario.nova</groupId>
 			<artifactId>NovaLightCommand</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

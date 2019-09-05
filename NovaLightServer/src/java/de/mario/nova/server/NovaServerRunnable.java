@@ -27,9 +27,9 @@ public class NovaServerRunnable implements Runnable, NovaCommandSink {
 	}
 
 	private static final Logger LOG = LogManager.getLogger(Logging.THREAD);
-	
+
 	private final CommandHandler cmdHandler;
-	
+
 	private final String threadIdentifier;
 
 	private final short threadId;
@@ -65,7 +65,6 @@ public class NovaServerRunnable implements Runnable, NovaCommandSink {
 			runCmdClient();
 		}
 
-
 		try {
 			if (os != null) {
 				os.close();
@@ -77,7 +76,7 @@ public class NovaServerRunnable implements Runnable, NovaCommandSink {
 		} catch (final IOException e) {
 			LOG.error(() -> "Error closing socket", e);
 		}
-		
+
 		if (type == Type.LIGHT_CONTROLLER) {
 			cmdHandler.unregisterCommandSink(this);
 		}
@@ -103,8 +102,8 @@ public class NovaServerRunnable implements Runnable, NovaCommandSink {
 				case NovaCommandUtil.LIGHT_CONTROLLER:
 					LOG.debug(() -> threadIdentifier + " identified as LIGHT_CONTROLLER"); 
 					return Type.LIGHT_CONTROLLER;
-					default: 
-						throw new IllegalStateException("Unkown identifier type " + bytes[1]);
+				default: 
+					throw new IllegalStateException("Unkown identifier type " + bytes[1]);
 				}
 			}
 		} catch (final IOException e) {
@@ -117,52 +116,47 @@ public class NovaServerRunnable implements Runnable, NovaCommandSink {
 	private void runCmdClient() {
 		final byte[] bytes = new byte[8];
 		while (run) {
-			try {
-				int bytesRead = 0;
-				int read;
-				while ((read = is.read(bytes, bytesRead, bytes.length - bytesRead)) > 0) {
-					bytesRead += read;
-				}
-
-				if (read < 0) {
-					LOG.debug(() -> "read returned -1");
-					run = false;
-					break;
-				}
-
-				int result = 	
-						((bytes[0] & 0xFF) << 24) 	| 
-						((bytes[1] & 0xFF) << 16) 	| 
-						((bytes[2] & 0xFF) << 8 ) 	| 
-						((bytes[3] & 0xFF) << 0 );
-				LOG.trace(() -> "got " + result + " " + Integer.toHexString(result).toUpperCase());
-				cmdHandler.queueCommand(new StaticLightCommand(threadId, Short.MAX_VALUE, Arrays.copyOfRange(bytes, 5, 8)));
-			} catch (final IOException e) {
-				LOG.error(() -> "Read error", e);
+			if ( ! readBytes(bytes)) {
+				break;
 			}
+			final int result = 	
+					((bytes[0] & 0xFF) << 24) 	| 
+					((bytes[1] & 0xFF) << 16) 	| 
+					((bytes[2] & 0xFF) << 8 ) 	| 
+					((bytes[3] & 0xFF) << 0 );
+			LOG.trace(() -> "got " + result + " " + Integer.toHexString(result).toUpperCase());
+			cmdHandler.queueCommand(new StaticLightCommand(threadId, Short.MAX_VALUE, Arrays.copyOfRange(bytes, 5, 8)));
 		}
 	}
-	
+
 	private void runLightControl() {
 		final byte[] bytes = new byte[4];
 		while (run) {
-			try {
-				int bytesRead = 0;
-				int read;
-				while ((read = is.read(bytes, bytesRead, bytes.length - bytesRead)) > 0) {
-					bytesRead += read;
-				}
-
-				if (read < 0) {
-					LOG.debug(() -> "read returned -1");
-					run = false;
-					break;
-				}
-			} catch (final IOException e) {
-				LOG.error(() -> "Read error", e);
-				run = false;
+			if ( ! readBytes(bytes)) {
+				break;
 			}
 		}
+	}
+
+	private boolean readBytes(final byte[] bytes) {
+		int bytesRead = 0;
+		int read;
+		try {
+			while ((read = is.read(bytes, bytesRead, bytes.length - bytesRead)) > 0) {
+				bytesRead += read;
+			}
+
+			if (read < 0) {
+				LOG.debug(() -> "read returned -1");
+				run = false;
+				return false;
+			}
+		} catch (IOException e) {
+			LOG.error(() -> "Read error", e);
+			run = false;
+			return false;
+		}
+		return true;
 	}
 
 	@Override

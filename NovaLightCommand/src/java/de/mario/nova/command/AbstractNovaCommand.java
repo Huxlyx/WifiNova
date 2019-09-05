@@ -23,7 +23,7 @@ public abstract class AbstractNovaCommand {
 	public AbstractNovaCommand(final short origin, final short target, final int additionalCommandLength, final LightCommand command) {
 		this.origin = origin;
 		this.target = target;
-		this.cmdHeader = new byte[7];
+		this.cmdHeader = new byte[3];
 		this.command = command;
 		
 		final short effectiveCmdLength = (short) (cmdHeader.length + additionalCommandLength);
@@ -31,10 +31,6 @@ public abstract class AbstractNovaCommand {
 		cmdHeader[0] = command.getCommandByte();
 		cmdHeader[1] = (byte) (effectiveCmdLength << 8);
 		cmdHeader[2] = (byte) effectiveCmdLength;
-		cmdHeader[3] = (byte) (origin >> 8);
-		cmdHeader[4] = (byte) origin;
-		cmdHeader[5] = (byte) (target >> 8);
-		cmdHeader[6] = (byte) target;
 	}
 	
 	public short getOrigin() {

@@ -28,12 +28,12 @@ public class LightTransitionCommand extends AbstractNovaCommand {
 	public String toString() {
 		final StringBuilder sb = getToStringHeader();
 		sb.append(" rgb1: [")
-		.append(payload[5]).append(',').append(payload[6]).append(',').append(payload[7])
+		.append(payload[0]).append(',').append(payload[1]).append(',').append(payload[2])
 		.append(']')
 		.append(" rgb2: [")
-		.append(payload[10]).append(',').append(payload[11]).append(',').append(payload[12])
+		.append(payload[5]).append(',').append(payload[6]).append(',').append(payload[7])
 		.append(']')
-		.append(" duration: " ).append((short) ((payload[8] >> 8 & 0xFF) | payload[9]));
+		.append(" duration: " ).append((short) ((payload[3] >> 8 & 0xFF) | payload[4]));
 		return sb.toString();
 	}
 

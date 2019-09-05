@@ -23,7 +23,7 @@ public class StaticLightCommand extends AbstractNovaCommand {
 	public String toString() {
 		final StringBuilder sb = getToStringHeader();
 		sb.append(" rg1: [")
-		.append(payload[5]).append(',').append(payload[6]).append(',').append(payload[7])
+		.append(payload[0]).append(',').append(payload[1]).append(',').append(payload[2])
 		.append(']');
 		return sb.toString();
 	}

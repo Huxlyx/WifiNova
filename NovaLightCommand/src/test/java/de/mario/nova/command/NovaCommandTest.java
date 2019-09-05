@@ -13,7 +13,7 @@ public class NovaCommandTest {
 		final byte[] rgb2 = new byte[] {34, 45, 56};
 		final LightTransitionCommand cmd = new LightTransitionCommand((short) 0, (short) 1, rgb1, rgb2, (short) 1234);
 		
-		assertEquals(7, cmd.cmdHeader.length);
+		assertEquals(3, cmd.cmdHeader.length);
 		assertEquals(8, cmd.payload.length);
 		
 		assertEquals(0, cmd.origin);

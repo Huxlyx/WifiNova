@@ -190,13 +190,13 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
 
 	@Override
-	public void handleCommand(AbstractNovaDataUnit cmd) {
+	public void handleCommand(final AbstractNovaDataUnit cmd) {
 		try {
 			cmd.writeDataUnit(os);
 			os.flush();
 			LOG.debug(() -> "Sent cmd bytes for cmd " + cmd);
 		} catch (IOException e) {
-			LOG.error(() -> "Could not send command", e);
+			LOG.error(() -> "Could not send data unit", e);
 		}
 	}
 

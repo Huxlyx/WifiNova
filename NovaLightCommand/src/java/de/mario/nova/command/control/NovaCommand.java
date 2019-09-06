@@ -51,20 +51,16 @@ public class NovaCommand {
 		return dataUnits;
 	}
 	
-	public void writeCommand(final OutputStream os) {
+	public void writeCommand(final OutputStream os) throws IOException {
 		/* sanity check that length does not extend beyond legal value */
 		if (length > Short.MAX_VALUE) {
 			LOG.error(() -> "Length " + length + " exceeds allowed value " + Short.MAX_VALUE);
 			throw new IllegalStateException("Length exceeded");
 		}
-		try {
-			os.write(new byte[] {command.getIdentifier()});
-			os.write(ByteUtil.shortToBytes((short) length));
-			for (final AbstractNovaDataUnit dataUnit : dataUnits) {
-				dataUnit.writeDataUnit(os);
-			}
-		} catch (final IOException e) {
-			LOG.error(() -> "Could not write command ", e);
+		os.write(new byte[] {command.getIdentifier()});
+		os.write(ByteUtil.shortToBytes((short) length));
+		for (final AbstractNovaDataUnit dataUnit : dataUnits) {
+			dataUnit.writeDataUnit(os);
 		}
 	}
 	

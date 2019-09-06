@@ -43,23 +43,20 @@ public abstract class AbstractNovaDataUnit {
 	 * Writes this data unit to the provided output stream.
 	 * 
 	 * @param os the {@link OutputStream}; not {@code null}
+	 * @throws IOException 
 	 */
-	public void writeDataUnit(final OutputStream os) {
-		try {
-			LOG.trace(() -> "Writing data unit");
-			
-			os.write(identifier.getIdentifier());
-			LOG.trace(() -> "    identifier " + identifier.getIdentifier());
-			
-			os.write(lengthBytes);
-			LOG.trace(() -> "    length bytes " + ByteUtil.toDebugString(lengthBytes));
-			
-			final byte[] payload = getPayload();
-			os.write(payload);
-			LOG.trace(() -> "    payload " + ByteUtil.toDebugString(lengthBytes));
-		} catch (final IOException e) {
-			LOG.error(() -> "Could not write dataUnit ", e);
-		}
+	public void writeDataUnit(final OutputStream os) throws IOException {
+		LOG.trace(() -> "Writing data unit");
+
+		os.write(identifier.getIdentifier());
+		LOG.trace(() -> "    identifier " + identifier.getIdentifier());
+
+		os.write(lengthBytes);
+		LOG.trace(() -> "    length bytes " + ByteUtil.toDebugString(lengthBytes));
+
+		final byte[] payload = getPayload();
+		os.write(payload);
+		LOG.trace(() -> "    payload " + ByteUtil.toDebugString(lengthBytes));
 	}
 	
 	protected abstract byte[] getPayload();

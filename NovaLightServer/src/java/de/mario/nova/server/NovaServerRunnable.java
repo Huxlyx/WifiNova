@@ -176,6 +176,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 	private boolean readBytes(final byte[] payload) {
 		int bytesRead = 0;
 		int read;
+		LOG.trace(() -> "Reading " + payload.length + " bytes"); 
 		try {
 			while ((read = is.read(payload, bytesRead, payload.length - bytesRead)) > 0) {
 				bytesRead += read;

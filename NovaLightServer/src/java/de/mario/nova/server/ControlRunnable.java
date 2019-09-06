@@ -40,7 +40,7 @@ public class ControlRunnable implements Runnable, ICommandHandler {
 				final AbstractNovaDataUnit target = dataUnits.get(0);
 				
 				if (target instanceof BroadcastDataUnit) {
-					LOG.debug(() -> "Broadcast " + dataUnits.size() + " data units");
+					LOG.debug(() -> "Broadcast " + (dataUnits.size() - 1) + " data units");
 					dataUnits.stream().skip(1).forEach(du -> CMD_SINKS.forEach(s -> s.handleCommand(du)));
 				} else if (target instanceof DeviceIdDataUnit) {
 					throw new IllegalStateException("Targeted data units are not implemented yet");

@@ -60,7 +60,7 @@ public abstract class AbstractNovaDataUnit {
 
 		final byte[] payload = getPayload();
 		os.write(payload);
-		LOG.trace(() -> "    payload " + ByteUtil.toDebugString(lengthBytes));
+		LOG.trace(() -> "    payload " + ByteUtil.toDebugString(payload));
 	}
 	
 	protected abstract byte[] getPayload();

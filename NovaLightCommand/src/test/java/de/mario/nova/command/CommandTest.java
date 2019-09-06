@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
+import de.mario.nova.command.dataunit.RGBDataUnit;
+import de.mario.nova.command.light.RGB;
 import de.mario.nova.command.util.NovaCommandUtil;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
@@ -25,7 +27,6 @@ public class CommandTest {
 		input.addDataUnit(new DeviceIdDataUnit(Short.MIN_VALUE));
 
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream(12);
-
 		input.writeCommand(bos);
 		final byte[] cmdBytes = bos.toByteArray();
 
@@ -37,13 +38,13 @@ public class CommandTest {
 		assertEquals(DataUnitIdentifier.ID, input.getDataUnits().get(1).getIdentifier());
 	}
 
+	@Test
 	public void testDecomposedHandshakeCommand() throws IOException {		
 		final NovaCommand input = new NovaCommand(CommandIdentifier.HANDSHAKE);
 		input.addDataUnit(new DeviceTypeDataUnit(DeviceTypeIdentifier.LIGHT_CONTROLLER));
 		input.addDataUnit(new DeviceIdDataUnit(Short.MIN_VALUE));
 
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream(12);
-
 		input.writeCommand(bos);
 		final byte[] cmdBytes = bos.toByteArray();
 
@@ -54,6 +55,21 @@ public class CommandTest {
 		
 		assertEquals(DataUnitIdentifier.TYPE, output.getDataUnits().get(0).getIdentifier());
 		assertEquals(DataUnitIdentifier.ID, output.getDataUnits().get(1).getIdentifier());
+	}
+	
+	@Test
+	public void testSimpleLightCommand() throws IOException {
+		final NovaCommand input = new NovaCommand(CommandIdentifier.LIGHT_COMMAND);
+		input.addDataUnit(new RGBDataUnit(new RGB((byte) 0x01, (byte) 0x23, (byte) 0x45)));
+
+
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream(9);
+		input.writeCommand(bos);
+		final byte[] cmdBytes = bos.toByteArray();
+
+		assertEquals(9, cmdBytes.length);
+		assertEquals(CommandIdentifier.LIGHT_COMMAND, input.getCommandIdentifier());
+		assertEquals(1, input.getDataUnits().size());
 	}
 	
 

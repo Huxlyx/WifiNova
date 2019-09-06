@@ -31,6 +31,7 @@ public class NovaCommand {
 	
 	/**
 	 * Convenience method to create a command with a single data unit
+	 * 
 	 * @param command the command
 	 * @param dataUnit the data unit; not {@code null}
 	 * @return the new command

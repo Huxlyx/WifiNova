@@ -37,8 +37,8 @@ public class DeviceIdDataUnit extends AbstractNovaDataUnit {
 	}
 
 	public static DeviceIdDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
-		if (length != 5) {
-			throw new IllegalArgumentException("Excepted byte array with length 5 but got " + bytes.length);
+		if (length != 2) {
+			throw new DataUnitException("Excepted length 2 but got " + bytes.length);
 		}
 		final short id = ByteUtil.bytesToShort(bytes[offset + 3], bytes[offset + 4]);
 		return new DeviceIdDataUnit(id);

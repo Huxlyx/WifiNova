@@ -31,8 +31,8 @@ public class RGBDataUnit extends AbstractNovaDataUnit {
 	}
 
 	public static RGBDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
-		if (length != 6) {
-			throw new IllegalArgumentException("Excepted byte array with length 6 but got " + bytes.length);
+		if (length != 3) {
+			throw new DataUnitException("Excepted length 3 but got " + bytes.length);
 		}
 		final RGB rbg = new RGB(bytes[offset + 3], bytes[offset + 4], bytes[offset + 5]);
 		return new RGBDataUnit(rbg);

@@ -25,8 +25,8 @@ public class BroadcastDataUnit extends AbstractNovaDataUnit {
 	}
 
 	public static BroadcastDataUnit fromBytes(byte[] bytes, final int offset, final int length) {
-		if (length != 3) {
-			throw new IllegalArgumentException("Excepted byte array with length 3 but got " + bytes.length);
+		if (length != 0) {
+			throw new DataUnitException("Excepted length 0 but got " + bytes.length + " (offset " + offset + ")");
 		}
 		return new BroadcastDataUnit();
 	}

@@ -36,8 +36,8 @@ public class DeviceTypeDataUnit extends AbstractNovaDataUnit {
 	}
 
 	public static DeviceTypeDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
-		if (length != 4) {
-			throw new IllegalArgumentException("Excepted byte array with length 5 but got " + bytes.length);
+		if (length != 1) {
+			throw new DataUnitException("Excepted length 2 but got " + bytes.length);
 		}
 		final NovaCommandUtil.DeviceTypeIdentifier type = NovaCommandUtil.DeviceTypeIdentifier.fromByte(bytes[offset + 3]);
 		return new DeviceTypeDataUnit(type);

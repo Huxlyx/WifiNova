@@ -8,6 +8,7 @@ import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 import de.mario.nova.command.dataunit.BroadcastDataUnit;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
+import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 
 public class NovaCommandUtil {
@@ -49,7 +50,7 @@ public class NovaCommandUtil {
 
 		ID ((byte) 0x02),
 
-		TYPE ((byte) 0x02),
+		TYPE ((byte) 0x03),
 
 		BROADCAST((byte) 0x0A),
 
@@ -107,7 +108,7 @@ public class NovaCommandUtil {
 	public static NovaCommand composeFromBytes(final CommandIdentifier command, final byte[] bytes) {
 		final NovaCommand cmd = new NovaCommand(command);
 
-		int index = 3;
+		int index = 0;
 		while (index < bytes.length) {
 			final byte dataUnitIdentifier = bytes[index];
 			final short length = ByteUtil.bytesToShort(bytes[index + 1], bytes[index + 2]);
@@ -115,13 +116,16 @@ public class NovaCommandUtil {
 			final DataUnitIdentifier identifier = DataUnitIdentifier.fromByte(dataUnitIdentifier);
 			switch (identifier) {
 			case BROADCAST:
-				cmd.addDataUnit(BroadcastDataUnit.fromBytes(bytes, index, length + AbstractNovaDataUnit.HEADER_SIZE));
+				cmd.addDataUnit(BroadcastDataUnit.fromBytes(bytes, index, length));
+				break;
+			case TYPE:
+				cmd.addDataUnit(DeviceTypeDataUnit.fromBytes(bytes, index, length));
 				break;
 			case ID:
-				cmd.addDataUnit(DeviceIdDataUnit.fromBytes(bytes, index, length + AbstractNovaDataUnit.HEADER_SIZE));
+				cmd.addDataUnit(DeviceIdDataUnit.fromBytes(bytes, index, length));
 				break;
 			case RGB:
-				cmd.addDataUnit(RGBDataUnit.fromBytes(bytes, index, length + AbstractNovaDataUnit.HEADER_SIZE));
+				cmd.addDataUnit(RGBDataUnit.fromBytes(bytes, index, length));
 				break;
 			case DURATION:
 			default:

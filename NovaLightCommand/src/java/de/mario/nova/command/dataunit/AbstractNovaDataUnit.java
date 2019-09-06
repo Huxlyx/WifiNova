@@ -32,6 +32,10 @@ public abstract class AbstractNovaDataUnit {
 		this.lengthBytes = ByteUtil.shortToBytes(length);
 	}
 	
+	public DataUnitIdentifier getIdentifier() {
+		return identifier;
+	}
+	
 	/**
 	 * @return the length of this data unit
 	 */

@@ -25,7 +25,7 @@ public class DeviceTypeDataUnit extends AbstractNovaDataUnit {
 
 	@Override
 	protected byte[] getPayload() {
-		return new byte[type.getIdentifier()];
+		return new byte[] {type.getIdentifier()};
 	}
 
 	@Override

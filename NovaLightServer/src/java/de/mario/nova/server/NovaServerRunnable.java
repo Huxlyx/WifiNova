@@ -17,6 +17,7 @@ import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
 import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
+import de.mario.nova.error.UnrecoverableNovaError;
 
 public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
@@ -59,21 +60,27 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 	@Override
 	public void run() {
 		LOG.debug(() -> threadIdentifier + " started");
-		final Type type = determineType();
+		try {
+			final Type type = determineType();
 
-		if (type == Type.LIGHT_CONTROLLER) {
-			cmdHandler.registerCommandSink(this);
-			try {
-				runLightControl();
-			} finally {
-				cmdHandler.unregisterCommandSink(this);
+			if (type == Type.LIGHT_CONTROLLER) {
+				cmdHandler.registerCommandSink(this);
+				try {
+					runLightControl();
+				} finally {
+					cmdHandler.unregisterCommandSink(this);
+				}
+			} else if (type == Type.COMMAND_CLIENT) {
+				runCmdClient();
 			}
-		} else if (type == Type.COMMAND_CLIENT) {
-			runCmdClient();
+		} catch (final UnrecoverableNovaError e) {
+			LOG.error("Error in run operation", e);
+		} finally {
+			close();
 		}
-		close();
+		LOG.debug(() -> "Thread " + threadId + " terminated");
 	}
-	
+
 	private void close() {
 		try {
 			if (os != null) {
@@ -86,26 +93,23 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		} catch (final IOException e) {
 			LOG.error(() -> "Error closing socket", e);
 		}
-
-		LOG.debug(() -> "Thread " + threadId + " terminated");
 	}
 
-	private Type determineType() {
-	
+	private Type determineType() throws UnrecoverableNovaError {
+
 		final NovaCommand cmd = getCommand();
 
 		if (cmd == null) {
-			throw new IllegalArgumentException("Could not determine device type, command is null");
+			throw new UnrecoverableNovaError("Could not determine device type, command is null");
 		}
 		if (cmd.getCommandIdentifier() != CommandIdentifier.HANDSHAKE) {
-			throw new IllegalStateException("Expected handshake but got " + cmd.getCommandIdentifier());
+			throw new UnrecoverableNovaError("Expected handshake but got " + cmd.getCommandIdentifier());
 		}
-		
+
 		final List<AbstractNovaDataUnit> dataUnits = cmd.getDataUnits();
-		
+
 		if (dataUnits.size() != 2) {
-			LOG.error(() -> "Expected two data units (type + id) but got " + dataUnits.size());
-			throw new IllegalStateException("Expected two data units (type + id) but got " + dataUnits.size());
+			throw new UnrecoverableNovaError("Expected two data units (type + id) but got " + dataUnits.size());
 		}
 
 		final DeviceTypeDataUnit deviceType = (DeviceTypeDataUnit) dataUnits.get(0);
@@ -122,12 +126,11 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		}
 	}
 
-	private void runCmdClient() {
+	private void runCmdClient() throws UnrecoverableNovaError {
 		while (run) {
 			final NovaCommand cmd = getCommand();
 			if (cmd == null) {
-				LOG.error(() -> "Could not handle command. Unrecoverable error, terminating client");
-				break;
+				throw new UnrecoverableNovaError("Could not handle command. Unrecoverable error, terminating client");
 			}
 			cmdHandler.queueCommand(cmd);
 		}
@@ -141,7 +144,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 			}
 		}
 	}
-	
+
 	private NovaCommand getCommand() {
 
 		/* read header */
@@ -149,11 +152,11 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		if ( ! readBytes(header)) {
 			return null;
 		}
-		
+
 		final CommandIdentifier commandId = CommandIdentifier.fromByte(header[0]);
 		final short commandLength = ByteUtil.bytesToShort(header[1], header[2]);
 		LOG.trace(() -> "Got new " + commandId + " with length " + commandLength);
-		
+
 		/* read payload */
 		final byte[] payload = new byte[commandLength];
 		if ( ! readBytes(payload)) {

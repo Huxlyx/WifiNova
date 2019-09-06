@@ -43,7 +43,7 @@ public class NovaCommand {
 	
 	public void addDataUnit(final AbstractNovaDataUnit dataUnit) {
 		dataUnits.add(dataUnit);
-		length += dataUnit.getLength();
+		length += dataUnit.getLength() + AbstractNovaDataUnit.HEADER_SIZE;
 		LOG.trace(() -> "Added data unit " + dataUnit + ". Total Length: " + length);
 	}
 	

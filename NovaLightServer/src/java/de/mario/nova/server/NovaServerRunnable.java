@@ -14,6 +14,7 @@ import de.mario.nova.command.control.INovaCommandSink;
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
+import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
 
@@ -150,7 +151,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		}
 		
 		final CommandIdentifier commandId = CommandIdentifier.fromByte(header[0]);
-		final short commandLength = NovaCommandUtil.bytesToShort(header[1], header[2]);
+		final short commandLength = ByteUtil.bytesToShort(header[1], header[2]);
 		LOG.trace(() -> "Got new " + commandId + " with length " + commandLength);
 		
 		/* read payload */

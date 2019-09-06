@@ -1,16 +1,16 @@
 package de.mario.nova.command.control;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.omg.CORBA.portable.OutputStream;
 
 import de.mario.nova.Logging;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
-import de.mario.nova.command.util.NovaCommandUtil;
+import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
 
 public class NovaCommand {
@@ -59,7 +59,7 @@ public class NovaCommand {
 		}
 		try {
 			os.write(new byte[] {command.getIdentifier()});
-			os.write(NovaCommandUtil.shortToBytes((short) length));
+			os.write(ByteUtil.shortToBytes((short) length));
 			for (final AbstractNovaDataUnit dataUnit : dataUnits) {
 				dataUnit.writeDataUnit(os);
 			}

@@ -104,21 +104,13 @@ public class NovaCommandUtil {
 		}
 	}
 
-	public static byte[] shortToBytes(final short val) {
-		return new byte[] { (byte) (val << 8), (byte) val };
-	}
-
-	public static short bytesToShort(final byte b1, final byte b2) {
-		return (short) (b1 << 8 | b2 & 0xFF);
-	}
-
 	public static NovaCommand composeFromBytes(final CommandIdentifier command, final byte[] bytes) {
 		final NovaCommand cmd = new NovaCommand(command);
 
 		int index = 3;
 		while (index < bytes.length) {
 			final byte dataUnitIdentifier = bytes[index];
-			final short length = bytesToShort(bytes[index + 1], bytes[index + 2]);
+			final short length = ByteUtil.bytesToShort(bytes[index + 1], bytes[index + 2]);
 
 			final DataUnitIdentifier identifier = DataUnitIdentifier.fromByte(dataUnitIdentifier);
 			switch (identifier) {

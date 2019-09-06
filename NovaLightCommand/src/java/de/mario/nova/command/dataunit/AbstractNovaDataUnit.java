@@ -3,13 +3,11 @@ package de.mario.nova.command.dataunit;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.mario.nova.Logging;
-import de.mario.nova.command.util.NovaCommandUtil;
+import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
 
 /**
@@ -31,7 +29,7 @@ public abstract class AbstractNovaDataUnit {
 	public AbstractNovaDataUnit(final DataUnitIdentifier identifier, final short length) {
 		this.identifier = identifier;
 		this.length = length;
-		this.lengthBytes = NovaCommandUtil.shortToBytes(length);
+		this.lengthBytes = ByteUtil.shortToBytes(length);
 	}
 	
 	/**
@@ -54,11 +52,11 @@ public abstract class AbstractNovaDataUnit {
 			LOG.trace(() -> "    identifier " + identifier.getIdentifier());
 			
 			os.write(lengthBytes);
-			LOG.trace(() -> "    length bytes " + DatatypeConverter.printHexBinary(lengthBytes));
+			LOG.trace(() -> "    length bytes " + ByteUtil.toDebugString(lengthBytes));
 			
 			final byte[] payload = getPayload();
 			os.write(payload);
-			LOG.trace(() -> "    payload " + DatatypeConverter.printHexBinary(payload));
+			LOG.trace(() -> "    payload " + ByteUtil.toDebugString(lengthBytes));
 		} catch (final IOException e) {
 			LOG.error(() -> "Could not write dataUnit ", e);
 		}

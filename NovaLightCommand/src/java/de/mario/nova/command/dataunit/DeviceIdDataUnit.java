@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.mario.nova.Logging;
-import de.mario.nova.command.util.NovaCommandUtil;
+import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
 
 public class DeviceIdDataUnit extends AbstractNovaDataUnit {
@@ -16,7 +16,7 @@ public class DeviceIdDataUnit extends AbstractNovaDataUnit {
 	public DeviceIdDataUnit(final short target) {
 		super(DataUnitIdentifier.ID, (short) 2);
 		this.target = target;
-		this.idBytes = NovaCommandUtil.shortToBytes(target);
+		this.idBytes = ByteUtil.shortToBytes(target);
 		LOG.trace(() -> "New DeviceIdDataUnit. Target: " + target);
 	}
 	
@@ -40,7 +40,7 @@ public class DeviceIdDataUnit extends AbstractNovaDataUnit {
 		if (length != 5) {
 			throw new IllegalArgumentException("Excepted byte array with length 5 but got " + bytes.length);
 		}
-		final short id = NovaCommandUtil.bytesToShort(bytes[offset + 3], bytes[offset + 4]);
+		final short id = ByteUtil.bytesToShort(bytes[offset + 3], bytes[offset + 4]);
 		return new DeviceIdDataUnit(id);
 	}
 

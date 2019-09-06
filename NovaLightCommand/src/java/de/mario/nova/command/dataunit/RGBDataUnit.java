@@ -1,0 +1,41 @@
+package de.mario.nova.command.dataunit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.mario.nova.Logging;
+import de.mario.nova.command.light.RGB;
+import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
+
+public class RGBDataUnit extends AbstractNovaDataUnit {
+	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
+	
+	final RGB rgb;
+
+	public RGBDataUnit(final RGB rgb) {
+		super(DataUnitIdentifier.RGB, (short) 3);
+		this.rgb = rgb;
+		LOG.trace(() -> "New RGBDataUnit. " + rgb);
+	}
+
+	@Override
+	protected byte[] getPayload() {
+		return rgb.getBytes();
+	}
+
+	@Override
+	protected String toStringDebug() {
+		final StringBuilder sb = new StringBuilder(32);
+		sb.append(this.getClass().getSimpleName()).append(" rgb: ").append(rgb);
+		return sb.toString();
+	}
+
+	public static RGBDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
+		if (length != 6) {
+			throw new IllegalArgumentException("Excepted byte array with length 6 but got " + bytes.length);
+		}
+		final RGB rbg = new RGB(bytes[offset + 3], bytes[offset + 4], bytes[offset + 5]);
+		return new RGBDataUnit(rbg);
+	}
+
+}

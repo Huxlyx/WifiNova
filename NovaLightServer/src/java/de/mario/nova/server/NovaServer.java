@@ -33,7 +33,7 @@ public class NovaServer {
 			while (runServer.get()) {
 				final Socket client = serverSocket.accept();
 				LOG.info(() -> "Got new client connection ");
-				final Thread thread = new Thread(new NovaServerRunnable(client, (CommandHandler) controlRunnable, threadId++));
+				final Thread thread = new Thread(new NovaServerRunnable(client, (ICommandHandler) controlRunnable, threadId++));
 				thread.start();
 			}
 		} catch (final IOException e) {

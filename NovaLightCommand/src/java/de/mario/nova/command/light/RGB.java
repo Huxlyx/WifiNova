@@ -2,14 +2,14 @@ package de.mario.nova.command.light;
 
 public class RGB {
 	
-	private final byte R;
-	private final byte G;
-	private final byte B;
+	private final byte r;
+	private final byte g;
+	private final byte b;
 	
 	public RGB(final byte R, final byte G, final byte B) {
-		this.R = R;
-		this.G = G;
-		this.B = B;
+		this.r = R;
+		this.g = G;
+		this.b = B;
 	}
 	
 	public static RGB fromBytes(final byte[] bytes) {
@@ -20,15 +20,15 @@ public class RGB {
 	}
 	
 	public byte[] getBytes() {
-		return new byte[] {R, G, B};
+		return new byte[] {r, g, b};
 	}
 
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder(40);
-		sb.append("<Red: ").append((short) R)
-		.append(", Green: ").append((short) G)
-		.append(", Blue: ").append((short) B).append('>');
+		sb.append("<Red: ").append(r & 0xFF)
+		.append(", Green: ").append(g & 0xFF)
+		.append(", Blue: ").append(b & 0xFF).append('>');
 		return sb.toString();
 	}
 }

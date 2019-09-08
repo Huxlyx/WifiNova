@@ -11,10 +11,15 @@ import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
 
 /**
+ * Abstract base class for data units.
+ * A data unit is contained of a {@link DataUnitIdentifier}, the length of the payload (possibly 0)
+ * and the optional payload itself.
+ * <pre>
  *    HEADER
  * +----+--------+---------+
  * | ID | LENGTH | PAYLOAD |
  * +----+--------+---------+
+ * </pre>
  */
 public abstract class AbstractNovaDataUnit {
 	
@@ -32,12 +37,15 @@ public abstract class AbstractNovaDataUnit {
 		this.lengthBytes = ByteUtil.shortToBytes(length);
 	}
 	
+	/**
+	 * @return the {@link DataUnitIdentifier} associated with this data unit.
+	 */ 
 	public DataUnitIdentifier getIdentifier() {
 		return identifier;
 	}
 	
 	/**
-	 * @return the length of this data unit
+	 * @return the length of the data unit's payload (possibly 0).
 	 */
 	public short getLength() {
 		return length;
@@ -63,8 +71,14 @@ public abstract class AbstractNovaDataUnit {
 		LOG.trace(() -> "    payload " + ByteUtil.toDebugString(payload));
 	}
 	
+	/**
+	 * @return the payload of the data unit or a byte array with length 0; not {@code null}
+	 */
 	protected abstract byte[] getPayload();
 	
+	/**
+	 * @return a string representation of the data unit for debug purposes; not {@code null}
+	 */
 	protected abstract String toStringDebug();
 	
 	@Override

@@ -15,13 +15,17 @@ public class ByteUtil {
 	}
 	
 	public static String toDebugString(final byte[] bytes) {
+		if (bytes == null) {
+			return "";
+		}
+		
 		final StringBuilder sb = new StringBuilder(bytes.length * 2);
 		
 		for (final byte b : bytes) {
 			for (int i = 0; i < 2; ++i) {
-				final int halfByte = i == 0 ? b >> 4 : b & 0x0F;
+				final int halfByte = i == 0 ? (b >> 4) & 0x0F : b & 0x0F;
 				
-				if (halfByte > 10) {
+				if (halfByte >= 10) {
 					switch (halfByte) {
 					case 10:
 						sb.append('A');

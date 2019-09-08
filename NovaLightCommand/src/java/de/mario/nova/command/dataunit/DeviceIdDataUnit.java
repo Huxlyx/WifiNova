@@ -11,17 +11,17 @@ public class DeviceIdDataUnit extends AbstractNovaDataUnit {
 	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
 
 	final byte[] idBytes;
-	final short target;
+	final short deviceId;
 	
 	public DeviceIdDataUnit(final short target) {
 		super(DataUnitIdentifier.ID, (short) 2);
-		this.target = target;
+		this.deviceId = target;
 		this.idBytes = ByteUtil.shortToBytes(target);
 		LOG.trace(() -> "New DeviceIdDataUnit. Target: " + target);
 	}
 	
-	public short getTarget() {
-		return target;
+	public short getDeviceId() {
+		return deviceId;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class DeviceIdDataUnit extends AbstractNovaDataUnit {
 	@Override
 	protected String toStringDebug() {
 		final StringBuilder sb = new StringBuilder(32);
-		sb.append(this.getClass().getSimpleName()).append(" Target: ").append(target);
+		sb.append(this.getClass().getSimpleName()).append(" DeviceId: ").append(deviceId);
 		return sb.toString();
 	}
 

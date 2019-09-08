@@ -52,9 +52,11 @@ public class NovaCommandUtil {
 
 		TYPE ((byte) 0x03),
 
-		BROADCAST((byte) 0x0A),
+		DURATION ((byte) 0x04),
 
-		DURATION ((byte) 0x03);
+		COMMAND_COUNT ((byte) 0x05),
+
+		BROADCAST((byte) 0x0A);
 
 		private final byte identifier;
 
@@ -82,7 +84,9 @@ public class NovaCommandUtil {
 
 		HANDSHAKE ((byte) 0xFF),
 
-		LIGHT_COMMAND((byte) 0x01);
+		LIGHT_COMMAND((byte) 0x01),
+		
+		DEVICE_UPDATE((byte) 0x02);
 
 		private final byte identifier;
 

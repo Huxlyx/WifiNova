@@ -1,5 +1,6 @@
 package de.mario.nova.command;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -62,7 +63,6 @@ public class CommandTest {
 		final NovaCommand input = new NovaCommand(CommandIdentifier.LIGHT_COMMAND);
 		input.addDataUnit(new RGBDataUnit(new RGB((byte) 0x01, (byte) 0x23, (byte) 0x45)));
 
-
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream(9);
 		input.writeCommand(bos);
 		final byte[] cmdBytes = bos.toByteArray();
@@ -70,6 +70,43 @@ public class CommandTest {
 		assertEquals(9, cmdBytes.length);
 		assertEquals(CommandIdentifier.LIGHT_COMMAND, input.getCommandIdentifier());
 		assertEquals(1, input.getDataUnits().size());
+	}
+	
+	@Test
+	public void testDecomposedSimpleLightCommand() throws IOException {
+		final NovaCommand input = new NovaCommand(CommandIdentifier.LIGHT_COMMAND);
+		input.addDataUnit(new RGBDataUnit(new RGB((byte) 0x01, (byte) 0x23, (byte) 0x45)));
+
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream(9);
+		input.writeCommand(bos);
+		final byte[] cmdBytes = bos.toByteArray();
+
+		final NovaCommand output = NovaCommandUtil.composeFromBytes(CommandIdentifier.LIGHT_COMMAND, Arrays.copyOfRange(cmdBytes, 3, 9));
+
+		assertEquals(CommandIdentifier.LIGHT_COMMAND, output.getCommandIdentifier());
+		assertEquals(1, output.getDataUnits().size());
+
+		assertEquals(9, cmdBytes.length);
+		assertEquals(CommandIdentifier.LIGHT_COMMAND, input.getCommandIdentifier());
+		assertEquals(1, input.getDataUnits().size());
+	}
+	
+	@Test
+	public void testExceededLengthCausesException() {
+		final NovaCommand cmd = new NovaCommand(CommandIdentifier.LIGHT_COMMAND);
+		final RGB rgb = new RGB((byte) 0x01, (byte) 0x23, (byte) 0x45);
+		final RGBDataUnit dataUnit = new RGBDataUnit(rgb);
+		for (int i = 0; i < 5_462; ++i) {
+			cmd.addDataUnit(dataUnit);
+		}
+		
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			cmd.writeCommand(baos);
+		} catch (final Exception e) {
+			assertTrue(e instanceof IllegalStateException);
+		}
+		
 	}
 	
 

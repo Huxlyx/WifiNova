@@ -24,21 +24,24 @@ public class NovaServer {
 	}
 	
 	public void run() {
-		final Runnable controlRunnable = new ControlRunnable();
+		final ControlRunnable controlRunnable = new ControlRunnable();
 		final Thread controlThread = new Thread(controlRunnable);
 		controlThread.start();
 		
 		LOG.debug(() -> "Server startup on port " + port);
 		try (final ServerSocket serverSocket = new ServerSocket(port)) {
 			while (runServer.get()) {
-				final Socket client = serverSocket.accept();
+				final Socket socket = serverSocket.accept();
 				LOG.info(() -> "Got new client connection ");
-				final Thread thread = new Thread(new NovaServerRunnable(client, (ICommandHandler) controlRunnable, threadId++));
+				final Thread thread = new Thread(new NovaServerRunnable(socket, controlRunnable, threadId++));
 				thread.start();
 			}
 		} catch (final IOException e) {
 			LOG.fatal(() -> "I/O Socket error", e); 
 		}
+		
+		controlRunnable.requestStop();
+		controlThread.interrupt();
 	}
 	
 	public void setRunServer(final boolean run) {

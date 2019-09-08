@@ -14,6 +14,7 @@ import de.mario.nova.command.control.INovaCommandSink;
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 import de.mario.nova.command.dataunit.DataUnitException;
+import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
 import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil;
@@ -34,16 +35,14 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 	private static final Logger LOG = LogManager.getLogger(Logging.THREAD);
 
 	private final ICommandHandler cmdHandler;
-
 	private final String threadIdentifier;
-
 	private final short threadId;
-
 	private final Socket socket;
 	private InputStream is;
+	
 	private BufferedOutputStream os;
-
 	private boolean run = true;
+	private short deviceId = Short.MIN_VALUE;
 
 	public NovaServerRunnable(final Socket socket, final ICommandHandler controlThread, final short threadId) {
 		this.socket = socket;
@@ -114,12 +113,15 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		}
 
 		final DeviceTypeDataUnit deviceType = (DeviceTypeDataUnit) dataUnits.get(0);
+		final DeviceIdDataUnit devId = (DeviceIdDataUnit) dataUnits.get(1);
+
+		LOG.debug(() -> threadIdentifier + " identified as " + deviceType.getDeviceType() + " with device id " + devId.getDeviceId());
+		
 		switch (deviceType.getDeviceType()) {
 		case COMMAND_CLIENT:
-			LOG.debug(() -> threadIdentifier + " identified as COMMAND_CLIENT"); 
 			return Type.COMMAND_CLIENT;
 		case LIGHT_CONTROLLER:
-			LOG.debug(() -> threadIdentifier + " identified as LIGHT_CONTROLLER"); 
+			this.deviceId = devId.getDeviceId();
 			return Type.LIGHT_CONTROLLER;
 		default:
 			LOG.warn(() -> "could not determine type of thread " + threadId);
@@ -143,6 +145,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 			if ( ! readBytes(bytes)) {
 				break;
 			}
+			LOG.error(threadIdentifier + " received bytes but didn't expect any");
 		}
 	}
 
@@ -199,7 +202,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
 
 	@Override
-	public void handleCommand(final AbstractNovaDataUnit cmd) {
+	public void handleDataUnit(final AbstractNovaDataUnit cmd) {
 		try {
 			cmd.writeDataUnit(os);
 			os.flush();
@@ -207,6 +210,11 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		} catch (IOException e) {
 			LOG.error(() -> "Could not send data unit", e);
 		}
+	}
+
+	@Override
+	public short getId() {
+		return deviceId;
 	}
 
 }

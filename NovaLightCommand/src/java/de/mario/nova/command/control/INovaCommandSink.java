@@ -4,6 +4,8 @@ import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 
 public interface INovaCommandSink {
 	
-	void handleCommand(final AbstractNovaDataUnit cmd);
+	void handleDataUnit(final AbstractNovaDataUnit cmd);
+	
+	short getId();
 
 }

@@ -1,8 +1,9 @@
 package de.mario.nova.command;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,16 +35,16 @@ public class DataUnitTest {
 	@Test
 	public void testBroadcastDataUnit() {
 		final BroadcastDataUnit broadcast = new BroadcastDataUnit();
-		Assert.assertEquals(DataUnitIdentifier.BROADCAST, broadcast.getIdentifier());
-		Assert.assertEquals(0, broadcast.getLength());
+		assertEquals(DataUnitIdentifier.BROADCAST, broadcast.getIdentifier());
+		assertEquals(0, broadcast.getLength());
 	}
 	
 	@Test
 	public void testConstructedBroadcastUnit() {
 		final byte[] data = new byte[0];
 		final BroadcastDataUnit constructedDataUnit = BroadcastDataUnit.fromBytes(data, 0, 0);
-		Assert.assertEquals(DataUnitIdentifier.BROADCAST, constructedDataUnit.getIdentifier());
-		Assert.assertEquals(0, constructedDataUnit.getLength());
+		assertEquals(DataUnitIdentifier.BROADCAST, constructedDataUnit.getIdentifier());
+		assertEquals(0, constructedDataUnit.getLength());
 	}
 	
 	@Test

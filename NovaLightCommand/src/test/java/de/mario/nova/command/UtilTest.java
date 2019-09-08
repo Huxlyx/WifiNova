@@ -1,11 +1,11 @@
 package de.mario.nova.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import de.mario.nova.command.util.ByteUtil;
@@ -22,7 +22,7 @@ public class UtilTest {
 		final Set<Byte> byteSet = new HashSet<>();
 		
 		for (final DeviceTypeIdentifier identifier : identifiers) {
-			Assert.assertTrue(byteSet.add(identifier.getIdentifier()));
+			assertTrue(byteSet.add(identifier.getIdentifier()));
 		}
 	}
 	
@@ -32,7 +32,7 @@ public class UtilTest {
 		final Set<Byte> byteSet = new HashSet<>();
 		
 		for (final DataUnitIdentifier identifier : identifiers) {
-			Assert.assertTrue(byteSet.add(identifier.getIdentifier()));
+			assertTrue(byteSet.add(identifier.getIdentifier()));
 		}
 	}
 	
@@ -42,7 +42,7 @@ public class UtilTest {
 		final Set<Byte> byteSet = new HashSet<>();
 		
 		for (final CommandIdentifier identifier : identifiers) {
-			Assert.assertTrue(byteSet.add(identifier.getIdentifier()));
+			assertTrue(byteSet.add(identifier.getIdentifier()));
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class UtilTest {
 		final DeviceTypeIdentifier[] identifiers = DeviceTypeIdentifier.values();
 
 		for (final DeviceTypeIdentifier identifier : identifiers) {
-			Assert.assertEquals(identifier, DeviceTypeIdentifier.fromByte(identifier.getIdentifier()));
+			assertEquals(identifier, DeviceTypeIdentifier.fromByte(identifier.getIdentifier()));
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class UtilTest {
 		final DataUnitIdentifier[] identifiers = DataUnitIdentifier.values();
 
 		for (final DataUnitIdentifier identifier : identifiers) {
-			Assert.assertEquals(identifier, DataUnitIdentifier.fromByte(identifier.getIdentifier()));
+			assertEquals(identifier, DataUnitIdentifier.fromByte(identifier.getIdentifier()));
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class UtilTest {
 		final CommandIdentifier[] identifiers = CommandIdentifier.values();
 
 		for (final CommandIdentifier identifier : identifiers) {
-			Assert.assertEquals(identifier, CommandIdentifier.fromByte((byte) (identifier.getIdentifier() & 0xFF)));
+			assertEquals(identifier, CommandIdentifier.fromByte((byte) (identifier.getIdentifier() & 0xFF)));
 		}
 	}
 	

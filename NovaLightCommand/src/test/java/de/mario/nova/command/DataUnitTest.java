@@ -13,6 +13,7 @@ import de.mario.nova.command.dataunit.CommandCountDataUnit;
 import de.mario.nova.command.dataunit.DataUnitException;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
+import de.mario.nova.command.dataunit.DurationDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 import de.mario.nova.command.light.RGB;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
@@ -51,5 +52,21 @@ public class DataUnitTest {
 	public void testConstructedBroadcastForDataUnitException() {
 		final byte[] data = new byte[0];
 		Assertions.assertThrows(DataUnitException.class, () -> BroadcastDataUnit.fromBytes(data, 0, 1));
+	}
+	
+	@Test
+	public void testDurationDataUnit() {
+		final DurationDataUnit duration = new DurationDataUnit((short) 123);
+		assertEquals(DataUnitIdentifier.DURATION, duration.getIdentifier());
+		assertEquals(2, duration.getLength());
+	}
+	
+	@Test
+	public void testConstructedDurationDataUnit() {
+		final byte[] data = new byte[] { 0x00, 0x00, 0x02, 0x12, 0x34 };
+		final DurationDataUnit constructedDataUnit = DurationDataUnit.fromBytes(data, 0, 2);
+		assertEquals(DataUnitIdentifier.DURATION, constructedDataUnit.getIdentifier());
+		assertEquals(2, constructedDataUnit.getLength());
+		assertEquals(4660, constructedDataUnit.getDuration());
 	}
 }

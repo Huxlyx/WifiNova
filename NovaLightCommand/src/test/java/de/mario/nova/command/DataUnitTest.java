@@ -9,11 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.BroadcastDataUnit;
-import de.mario.nova.command.dataunit.CommandCountDataUnit;
 import de.mario.nova.command.dataunit.DataUnitException;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
-import de.mario.nova.command.dataunit.DurationDataUnit;
+import de.mario.nova.command.dataunit.GradientDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 import de.mario.nova.command.light.RGB;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
@@ -26,7 +25,6 @@ public class DataUnitTest {
 	public void testDataUnitToStringMethods() throws IOException {
 		final NovaCommand cmd = new NovaCommand(CommandIdentifier.LIGHT_COMMAND);
 		cmd.addDataUnit(new BroadcastDataUnit());
-		cmd.addDataUnit(new CommandCountDataUnit(Short.MIN_VALUE));
 		cmd.addDataUnit(new DeviceIdDataUnit(Short.MIN_VALUE));
 		cmd.addDataUnit(new DeviceTypeDataUnit(DeviceTypeIdentifier.COMMAND_CLIENT));
 		cmd.addDataUnit(new RGBDataUnit(new RGB((byte) 0x01, (byte) 0x23, (byte) 0x45)));
@@ -55,18 +53,17 @@ public class DataUnitTest {
 	}
 	
 	@Test
-	public void testDurationDataUnit() {
-		final DurationDataUnit duration = new DurationDataUnit((short) 123);
-		assertEquals(DataUnitIdentifier.DURATION, duration.getIdentifier());
-		assertEquals(2, duration.getLength());
+	public void testGradientDataUnit() {
+		final RGB rgbFrom = new RGB(0, 0, 0);
+		final RGB rgbTo = new RGB(255, 255, 255);
+		final GradientDataUnit gradient = new GradientDataUnit(rgbFrom, rgbTo, (short) 2_000);
+		assertEquals(DataUnitIdentifier.GRADIENT, gradient.getIdentifier());
+		assertEquals(8, gradient.getLength());
 	}
 	
-	@Test
-	public void testConstructedDurationDataUnit() {
-		final byte[] data = new byte[] { 0x00, 0x00, 0x02, 0x12, 0x34 };
-		final DurationDataUnit constructedDataUnit = DurationDataUnit.fromBytes(data, 0, 2);
-		assertEquals(DataUnitIdentifier.DURATION, constructedDataUnit.getIdentifier());
-		assertEquals(2, constructedDataUnit.getLength());
-		assertEquals(4660, constructedDataUnit.getDuration());
-	}
+//	@Test
+//	public void testConstructedGradientDataUnit() {
+//		final byte
+//	}
+	
 }

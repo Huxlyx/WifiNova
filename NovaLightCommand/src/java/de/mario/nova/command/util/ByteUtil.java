@@ -7,7 +7,7 @@ public class ByteUtil {
 	}
 
 	public static byte[] shortToBytes(final short val) {
-		return new byte[] { (byte) (val << 8), (byte) val };
+		return new byte[] { (byte) (val >> 8), (byte) val };
 	}
 
 	public static short bytesToShort(final byte b1, final byte b2) {

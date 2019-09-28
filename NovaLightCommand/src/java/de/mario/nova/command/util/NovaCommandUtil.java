@@ -9,6 +9,8 @@ import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 import de.mario.nova.command.dataunit.BroadcastDataUnit;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
+import de.mario.nova.command.dataunit.FlickerDataUnit;
+import de.mario.nova.command.dataunit.GradientDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 
 public class NovaCommandUtil {
@@ -21,7 +23,6 @@ public class NovaCommandUtil {
 		LIGHT_CONTROLLER((byte) 0x0A),
 
 		COMMAND_CLIENT((byte) 0x0B);
-
 
 		private final byte identifier;
 
@@ -52,11 +53,11 @@ public class NovaCommandUtil {
 
 		TYPE ((byte) 0x03),
 
-		DURATION ((byte) 0x04),
+		GRADIENT ((byte) 0x05),
 
-		COMMAND_COUNT ((byte) 0x05),
+		BROADCAST((byte) 0x0A),
 
-		BROADCAST((byte) 0x0A);
+		FLICKER((byte) 0x0F);
 
 		private final byte identifier;
 
@@ -131,7 +132,12 @@ public class NovaCommandUtil {
 			case RGB:
 				cmd.addDataUnit(RGBDataUnit.fromBytes(bytes, index, length));
 				break;
-			case DURATION:
+			case FLICKER:
+				cmd.addDataUnit(FlickerDataUnit.fromBytes(bytes, index, length));
+				break;
+			case GRADIENT:
+				cmd.addDataUnit(GradientDataUnit.fromBytes(bytes, index, length));
+				break;
 			default:
 				LOG.error("Unhandled identifier type " + identifier);
 				break;

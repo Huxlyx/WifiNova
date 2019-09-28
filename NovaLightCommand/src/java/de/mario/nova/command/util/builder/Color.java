@@ -10,7 +10,11 @@ public enum Color {
 	
 	WHITE((byte) 0xFF, (byte) 0xFF, (byte) 0xFF),
 	
-	BLACK((byte) 0x00, (byte) 0x00, (byte) 0x00);
+	BLACK((byte) 0x00, (byte) 0x00, (byte) 0x00),
+	
+	SOME_KIND_OF_ORANGE((byte) 226, (byte) 121, (byte) 35),
+	
+	SOME_KIND_OF_GREENISH((byte) 74, (byte)  150, (byte) 12);
 	
 	
 	public final byte r;

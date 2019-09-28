@@ -25,7 +25,7 @@ public abstract class AbstractNovaDataUnit {
 	
 	public static final int HEADER_SIZE = 3;
 	
-	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
+	protected static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
 	
 	final DataUnitIdentifier identifier;
 	final short length;

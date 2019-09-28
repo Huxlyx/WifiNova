@@ -13,7 +13,6 @@ import de.mario.nova.command.control.INovaCommandSink;
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
 import de.mario.nova.command.dataunit.BroadcastDataUnit;
-import de.mario.nova.command.dataunit.CommandCountDataUnit;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 
 public class ControlRunnable implements Runnable, ICommandHandler {
@@ -27,7 +26,7 @@ public class ControlRunnable implements Runnable, ICommandHandler {
 
 	@Override
 	public void run() {
-		LOG.info(() -> "Started control loop"); 
+		LOG.debug(() -> "Started control loop"); 
 
 		while (run.get()) {
 			try {
@@ -44,8 +43,9 @@ public class ControlRunnable implements Runnable, ICommandHandler {
 				if (target instanceof BroadcastDataUnit) {
 					LOG.debug(() -> "Broadcast " + (dataUnits.size() - 1) + " data units");
 					if (dataUnits.size() > 2) {
-						final CommandCountDataUnit ccdu = new CommandCountDataUnit((short) (dataUnits.size() - 1));
-						CMD_SINKS.forEach(s -> s.handleDataUnit(ccdu));
+						LOG.error(() -> "Multiple data units not supported yet, received " + dataUnits.size());
+//						final CommandCountDataUnit ccdu = new CommandCountDataUnit((short) (dataUnits.size() - 1));
+//						CMD_SINKS.forEach(s -> s.handleDataUnit(ccdu));
 					}
 					dataUnits.stream().skip(1).forEach(du -> CMD_SINKS.forEach(s -> s.handleDataUnit(du)));
 				} else if (target instanceof DeviceIdDataUnit) {

@@ -12,6 +12,21 @@ public class RGB {
 		this.b = B;
 	}
 	
+	public RGB(int r, int g, int b) {
+		if (r > 255 || r < 0) {
+			throw new IllegalArgumentException("Expected valid byte value for R parameter but got " + r);
+		}
+		if (g > 255 || g < 0) {
+			throw new IllegalArgumentException("Expected valid byte value for G parameter but got " + g);
+		}
+		if (b > 255 || b < 0) {
+			throw new IllegalArgumentException("Expected valid byte value for B parameter but got " + b);
+		}
+		this.r = (byte) r;
+		this.g = (byte) g;
+		this.b = (byte) b;
+	}
+	
 	public static RGB fromBytes(final byte[] bytes) {
 		if (bytes.length != 3) {
 			throw new IllegalArgumentException("Expected byte array of length 3 but got " + bytes.length);

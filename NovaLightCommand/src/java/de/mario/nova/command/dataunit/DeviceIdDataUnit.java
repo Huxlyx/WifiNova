@@ -1,14 +1,9 @@
 package de.mario.nova.command.dataunit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import de.mario.nova.Logging;
 import de.mario.nova.command.util.ByteUtil;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
 
 public class DeviceIdDataUnit extends AbstractNovaDataUnit {
-	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
 
 	final byte[] idBytes;
 	final short deviceId;

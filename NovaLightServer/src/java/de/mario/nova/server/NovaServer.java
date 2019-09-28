@@ -28,7 +28,7 @@ public class NovaServer {
 		final Thread controlThread = new Thread(controlRunnable);
 		controlThread.start();
 		
-		LOG.debug(() -> "Server startup on port " + port);
+		LOG.info(() -> "Server startup on port " + port);
 		try (final ServerSocket serverSocket = new ServerSocket(port)) {
 			while (runServer.get()) {
 				final Socket socket = serverSocket.accept();

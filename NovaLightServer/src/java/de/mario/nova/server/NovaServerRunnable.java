@@ -31,6 +31,14 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
 		UNKNOWN
 	}
+	
+	private enum ReadResult {
+		OK,
+		
+		DISCONNECT,
+		
+		ERROR
+	}
 
 	private static final Logger LOG = LogManager.getLogger(Logging.THREAD);
 
@@ -134,15 +142,19 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 			final NovaCommand cmd = getCommand();
 			if (cmd == null) {
 				throw new UnrecoverableNovaError("Could not handle command. Unrecoverable error, terminating client");
+			} else if (cmd.getCommandIdentifier() == CommandIdentifier.DISCONNECT) {
+				LOG.debug(() -> "Detected client disconnect");
+				run = false;
+			} else {
+				cmdHandler.queueCommand(cmd);
 			}
-			cmdHandler.queueCommand(cmd);
 		}
 	}
 
 	private void runLightControl() {
 		final byte[] bytes = new byte[3];
 		while (run) {
-			if ( ! readBytes(bytes)) {
+			if (readBytes(bytes) == ReadResult.DISCONNECT) {
 				break;
 			}
 			LOG.error(threadIdentifier + " received bytes but didn't expect any");
@@ -153,8 +165,16 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
 		/* read header */
 		final byte[] header = new byte[3];
-		if ( ! readBytes(header)) {
+		switch (readBytes(header)) {
+		case OK:
+			/* everything ok, just continue */
+			break;
+		case DISCONNECT:
+			return NovaCommand.disconnect();
+		case ERROR:
 			return null;
+		default:
+			throw new IllegalArgumentException("Unexpected read result");
 		}
 
 		final CommandIdentifier commandId = CommandIdentifier.fromByte(header[0]);
@@ -163,7 +183,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 
 		/* read payload */
 		final byte[] payload = new byte[commandLength];
-		if ( ! readBytes(payload)) {
+		if (readBytes(payload) != ReadResult.OK) {
 			return null;
 		}
 
@@ -176,7 +196,7 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 		}
 	}
 
-	private boolean readBytes(final byte[] payload) {
+	private ReadResult readBytes(final byte[] payload) {
 		int bytesRead = 0;
 		int read;
 		LOG.trace(() -> "Reading " + payload.length + " bytes"); 
@@ -190,14 +210,14 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 			if (read < 0) {
 				LOG.debug(() -> "read returned -1");
 				run = false;
-				return false;
+				return ReadResult.DISCONNECT;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LOG.error(() -> "Read error", e);
 			run = false;
-			return false;
+			return ReadResult.ERROR;
 		}
-		return true;
+		return ReadResult.OK;
 	}
 
 
@@ -215,6 +235,14 @@ public class NovaServerRunnable implements Runnable, INovaCommandSink {
 	@Override
 	public short getId() {
 		return deviceId;
+	}
+	
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder(128);
+		sb.append("Runnable ").append(threadIdentifier).append(" id: ").append(deviceId);
+		sb.append(" running? ").append(run ? "yes!" : "no!");
+		return sb.toString();
 	}
 
 }

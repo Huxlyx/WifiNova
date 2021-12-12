@@ -27,7 +27,7 @@ public class FlickerDataUnit extends AbstractNovaDataUnit {
 
 	public static FlickerDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
 		if (length != 3) {
-			throw new DataUnitException("Excepted length 3 but got " + bytes.length);
+			throw new DataUnitException("Expected length 3 but got " + bytes.length);
 		}
 		final RGB rbg = new RGB(bytes[offset + 3], bytes[offset + 4], bytes[offset + 5]);
 		return new FlickerDataUnit(rbg);

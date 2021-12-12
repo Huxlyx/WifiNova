@@ -26,6 +26,10 @@ public class NovaCommand {
 	private final CommandIdentifier command;
 	private int length;
 	
+	public static NovaCommand disconnect() {
+		return new NovaCommand(CommandIdentifier.DISCONNECT);
+	}
+	
 	/**
 	 * Create a new NovaCommand with the provided {@link CommandIdentifier}.
 	 * 

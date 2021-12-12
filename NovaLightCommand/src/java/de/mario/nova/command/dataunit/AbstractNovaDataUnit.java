@@ -15,7 +15,7 @@ import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
  * A data unit is contained of a {@link DataUnitIdentifier}, the length of the payload (possibly 0)
  * and the optional payload itself.
  * <pre>
- *    HEADER
+ * |<-  HEADER ->|
  * +----+--------+---------+
  * | ID | LENGTH | PAYLOAD |
  * +----+--------+---------+
@@ -38,6 +38,16 @@ public abstract class AbstractNovaDataUnit {
 	}
 	
 	/**
+	 * @return the payload of the data unit or a byte array with length 0; not {@code null}
+	 */
+	protected abstract byte[] getPayload();
+	
+	/**
+	 * @return a string representation of the data unit for debug purposes; not {@code null}
+	 */
+	protected abstract String toStringDebug();
+	
+	/**
 	 * @return the {@link DataUnitIdentifier} associated with this data unit.
 	 */ 
 	public DataUnitIdentifier getIdentifier() {
@@ -55,7 +65,7 @@ public abstract class AbstractNovaDataUnit {
 	 * Writes this data unit to the provided output stream.
 	 * 
 	 * @param os the {@link OutputStream}; not {@code null}
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void writeDataUnit(final OutputStream os) throws IOException {
 		LOG.trace(() -> "Writing data unit");
@@ -71,19 +81,8 @@ public abstract class AbstractNovaDataUnit {
 		LOG.trace(() -> "    payload " + ByteUtil.toDebugString(payload));
 	}
 	
-	/**
-	 * @return the payload of the data unit or a byte array with length 0; not {@code null}
-	 */
-	protected abstract byte[] getPayload();
-	
-	/**
-	 * @return a string representation of the data unit for debug purposes; not {@code null}
-	 */
-	protected abstract String toStringDebug();
-	
 	@Override
 	public String toString() {
 		return toStringDebug();
 	}
-
 }

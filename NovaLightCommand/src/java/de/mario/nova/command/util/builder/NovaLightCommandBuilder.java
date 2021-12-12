@@ -2,6 +2,7 @@ package de.mario.nova.command.util.builder;
 
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.BroadcastDataUnit;
+import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.util.NovaCommandUtil.CommandIdentifier;
 
 public class NovaLightCommandBuilder {
@@ -18,6 +19,11 @@ public class NovaLightCommandBuilder {
 	
 	public LightSubBuilder asBroadcast() {
 		command.addDataUnit(new BroadcastDataUnit());
+		return new LightSubBuilder(command);
+	}
+	
+	public LightSubBuilder toDeviceWithId(final short id) {
+		command.addDataUnit(new DeviceIdDataUnit(id));
 		return new LightSubBuilder(command);
 	}
 	

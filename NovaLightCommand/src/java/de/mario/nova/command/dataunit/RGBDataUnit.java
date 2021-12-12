@@ -1,14 +1,9 @@
 package de.mario.nova.command.dataunit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import de.mario.nova.Logging;
 import de.mario.nova.command.light.RGB;
 import de.mario.nova.command.util.NovaCommandUtil.DataUnitIdentifier;
 
 public class RGBDataUnit extends AbstractNovaDataUnit {
-	private static final Logger LOG = LogManager.getLogger(Logging.COMMAND);
 	
 	final RGB rgb;
 
@@ -32,7 +27,7 @@ public class RGBDataUnit extends AbstractNovaDataUnit {
 
 	public static RGBDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
 		if (length != 3) {
-			throw new DataUnitException("Excepted length 3 but got " + bytes.length);
+			throw new DataUnitException("Expected length 3 but got " + bytes.length);
 		}
 		final RGB rbg = new RGB(bytes[offset + 3], bytes[offset + 4], bytes[offset + 5]);
 		return new RGBDataUnit(rbg);

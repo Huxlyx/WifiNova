@@ -45,7 +45,7 @@ public class GradientDataUnit extends AbstractNovaDataUnit {
 
 	public static GradientDataUnit fromBytes(final byte[] bytes, final int offset, final int length) {
 		if (length != 8) {
-			throw new DataUnitException("Excepted length 3 but got " + bytes.length);
+			throw new DataUnitException("Expected length 8 but got " + bytes.length);
 		}
 		final RGB rgb1 = new RGB(bytes[offset + 3], bytes[offset + 4], bytes[offset + 5]);
 		final RGB rgb2 = new RGB(bytes[offset + 6], bytes[offset + 7], bytes[offset + 8]);

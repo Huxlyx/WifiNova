@@ -11,6 +11,7 @@ import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 import de.mario.nova.command.dataunit.DeviceTypeDataUnit;
 import de.mario.nova.command.dataunit.FlickerDataUnit;
 import de.mario.nova.command.dataunit.GradientDataUnit;
+import de.mario.nova.command.dataunit.LEDTestDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 
 public class NovaCommandUtil {
@@ -55,6 +56,8 @@ public class NovaCommandUtil {
 
 		GRADIENT ((byte) 0x05),
 
+		LED_TEST ((byte) 0x06),
+
 		BROADCAST((byte) 0x0A),
 
 		FLICKER((byte) 0x0F);
@@ -87,7 +90,9 @@ public class NovaCommandUtil {
 
 		LIGHT_COMMAND((byte) 0x01),
 		
-		DEVICE_UPDATE((byte) 0x02);
+		DEVICE_UPDATE((byte) 0x02),
+		
+		DISCONNECT((byte) 0xAA);
 
 		private final byte identifier;
 
@@ -134,6 +139,9 @@ public class NovaCommandUtil {
 				break;
 			case FLICKER:
 				cmd.addDataUnit(FlickerDataUnit.fromBytes(bytes, index, length));
+				break;
+			case LED_TEST:
+				cmd.addDataUnit(LEDTestDataUnit.fromBytes(bytes, index, length));
 				break;
 			case GRADIENT:
 				cmd.addDataUnit(GradientDataUnit.fromBytes(bytes, index, length));

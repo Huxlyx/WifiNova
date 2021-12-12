@@ -12,7 +12,6 @@ import de.mario.nova.Logging;
 import de.mario.nova.command.control.INovaCommandSink;
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.AbstractNovaDataUnit;
-import de.mario.nova.command.dataunit.BroadcastDataUnit;
 import de.mario.nova.command.dataunit.DeviceIdDataUnit;
 
 public class ControlRunnable implements Runnable, ICommandHandler {
@@ -40,7 +39,8 @@ public class ControlRunnable implements Runnable, ICommandHandler {
 				
 				final AbstractNovaDataUnit target = dataUnits.get(0);
 				
-				if (target instanceof BroadcastDataUnit) {
+				switch (target.getIdentifier()) {
+				case BROADCAST:
 					LOG.debug(() -> "Broadcast " + (dataUnits.size() - 1) + " data units");
 					if (dataUnits.size() > 2) {
 						LOG.error(() -> "Multiple data units not supported yet, received " + dataUnits.size());
@@ -48,8 +48,18 @@ public class ControlRunnable implements Runnable, ICommandHandler {
 //						CMD_SINKS.forEach(s -> s.handleDataUnit(ccdu));
 					}
 					dataUnits.stream().skip(1).forEach(du -> CMD_SINKS.forEach(s -> s.handleDataUnit(du)));
-				} else if (target instanceof DeviceIdDataUnit) {
-					throw new IllegalStateException("Targeted data units are not implemented yet");
+					break;
+				case ID:
+					final short targetId = ((DeviceIdDataUnit) target).getDeviceId();
+					LOG.debug(() -> "Targeted: " + (dataUnits.size() - 1) + " data units to id " + targetId);
+					dataUnits.stream().skip(1).forEach(du -> CMD_SINKS.forEach(s ->  {
+						if (s.getId() == targetId) {
+							s.handleDataUnit(du);
+						}
+					}));
+					break;
+				default:
+					throw new IllegalStateException("Unexpected data identifier " + target.getIdentifier());
 				}
 			} catch (final InterruptedException e) {
 				LOG.warn(() -> "Main control loop interrupted", e);

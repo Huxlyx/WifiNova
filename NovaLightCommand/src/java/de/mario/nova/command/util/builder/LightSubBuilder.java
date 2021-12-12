@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import de.mario.nova.command.control.NovaCommand;
 import de.mario.nova.command.dataunit.FlickerDataUnit;
+import de.mario.nova.command.dataunit.LEDTestDataUnit;
 import de.mario.nova.command.dataunit.RGBDataUnit;
 import de.mario.nova.command.light.RGB;
 
@@ -38,6 +39,15 @@ public class LightSubBuilder {
 		final RGB rgb = new RGB(color.r, color.g, color.b);
 		command.addDataUnit(new RGBDataUnit(rgb));
 		return this;
+	}
+	
+	public LightSubBuilder addLEDTest() {
+		command.addDataUnit(new LEDTestDataUnit());
+		return this;
+	}
+	
+	public GradientSubBuilder addGradient() {
+		return new GradientSubBuilder(this);
 	}
 	
 	public void go(final OutputStream os) throws IOException {
